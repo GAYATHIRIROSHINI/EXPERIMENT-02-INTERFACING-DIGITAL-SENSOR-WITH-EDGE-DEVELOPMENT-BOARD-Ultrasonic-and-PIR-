@@ -202,6 +202,7 @@ Experiment 2B
 <img width="1600" height="900" alt="WhatsApp Image 2026-04-28 at 2 29 30 PM" src="https://github.com/user-attachments/assets/59acba63-9ec5-45a5-997d-c8d3f807fc1b" />
 
 <img width="1600" height="900" alt="WhatsApp Image 2026-04-28 at 2 28 37 PM" src="https://github.com/user-attachments/assets/9df65594-6657-4349-b613-8a4c6950c0d1" />
+<img width="899" height="1599" alt="image" src="https://github.com/user-attachments/assets/cefa80c1-5aed-4d0c-ac8e-19bdb9131e31" />
 
  
 ## RESULTS
