@@ -1,8 +1,8 @@
 # EXPERIMENT-02-INTERFACTING-DIGITAL-SENSOR-WITH-EDGE-DEVELOPMENT-BOARD-ULTRASONIC-AND-PIR-SENSOR-(RASPBERRYPI-PI4)
-### NAME 
-### DEPARTMENT 
-### ROLL NO 
-### DATE OF EXPERIMENT 
+### NAME :M GAYATHIRI ROSHINI 
+### DEPARTMENT : CSE
+### ROLL NO : 212223110012
+### DATE OF EXPERIMENT : 28.04.26
 
 ### AIM
 To interface a digital sensor (Ultrasonic and PIR) with the Raspberry Pi 4 and control it using Python.
@@ -62,6 +62,67 @@ Connect the PIR sensor OUT to any one GPIO.
 Experiment 2A
 ## PROGRAM (Python)
 ```
+import RPi.GPIO as GPIO
+import time
+import requests
+
+# ThingSpeak settings
+API_KEY = "192HDZVFXDMCONBW"
+THINGSPEAK_URL = "https://api.thingspeak.com/update"
+
+# GPIO pins
+TRIG = 18
+ECHO = 23
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(TRIG, GPIO.OUT)
+GPIO.setup(ECHO, GPIO.IN)
+
+def get_distance():
+    GPIO.output(TRIG, False)
+    time.sleep(0.5)
+
+    # Trigger pulse
+    GPIO.output(TRIG, True)
+    time.sleep(0.00001)
+    GPIO.output(TRIG, False)
+
+    while GPIO.input(ECHO) == 0:
+        pulse_start = time.time()
+
+    while GPIO.input(ECHO) == 1:
+        pulse_end = time.time()
+
+    pulse_duration = pulse_end - pulse_start
+    distance = pulse_duration * 17150
+    distance = round(distance, 2)
+
+    return distance
+
+try:
+    while True:
+        distance = get_distance()
+
+        # Console output
+        print("distance =", distance, "cm")
+
+        # Text message for ThingSpeak
+        status_text = f"distance = {distance} cm"
+
+        # Send data to ThingSpeak
+        payload = {
+            "api_key": API_KEY,
+            "field1": distance,   # numeric for chart
+            "status": status_text # text message
+        }
+
+        response = requests.get(THINGSPEAK_URL, params=payload)
+        print("Sent to ThingSpeak")
+
+        time.sleep(15)
+
+except KeyboardInterrupt:
+    GPIO.cleanup()
 
 
  
@@ -73,18 +134,59 @@ Experiment 2A
 
 ### OUPUT  
 Experiment 2A
+<img width="528" height="316" alt="WhatsApp Image 2026-04-28 at 2 07 37 PM" src="https://github.com/user-attachments/assets/22d576b4-8b23-46fc-bb55-2fc9eab3cf40" />
+<img width="1600" height="900" alt="WhatsApp Image 2026-04-28 at 2 04 10 PM" src="https://github.com/user-attachments/assets/f7ce0752-a9f9-4923-b7d7-21cabdbc282c" />
+<img width="1200" height="1600" alt="WhatsApp Image 2026-04-28 at 2 03 15 PM" src="https://github.com/user-attachments/assets/9ace4bb7-303f-4cad-ac18-554c58bdc8fe" />
 
-# FIGURE -04 ADD TITILE HERE 
 
-#  FIGURE -05 ADD TITILE HERE 
-
-# FIGURE -06 ADD TITLE HERE 
 
 Experiment 2B
 ## PROGRAM (Python)
 ```
 
+import RPi.GPIO as GPIO
+import time
+import requests
 
+WRITE_API_KEY = "TZD4JA79XDJ0QPG5"
+URL = "https://api.thingspeak.com/update"
+
+PIR_PIN = 24
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(PIR_PIN, GPIO.IN)
+
+print("PIR Monitoring Started...")
+time.sleep(2)
+
+last_state = -1   # store previous state
+
+def update_thingspeak(state):
+    data = {
+        "api_key": WRITE_API_KEY,
+        "field3": state
+    }
+    try:
+        requests.get(URL, params=data)
+        print("Uploaded to ThingSpeak:", state)
+    except:
+        print("Upload Failed")
+
+while True:
+    motion = GPIO.input(PIR_PIN)
+
+    if motion != last_state:   # send only if changed
+        if motion == 1:
+            print("Motion Detected")
+            update_thingspeak(1)
+        else:
+            print("No Motion")
+            update_thingspeak(0)
+
+        last_state = motion
+        time.sleep(15)  # ThingSpeak delay
+
+    time.sleep(1)
  
 
 
@@ -95,11 +197,11 @@ Experiment 2B
 ### OUPUT  
 Experiment 2B
 
-# FIGURE -07 ADD TITILE HERE 
+<img width="580" height="388" alt="WhatsApp Image 2026-04-28 at 2 31 46 PM" src="https://github.com/user-attachments/assets/2760f749-3aa3-4f9a-8cb0-a0312af8ee6a" />
 
-#  FIGURE -08 ADD TITILE HERE 
+<img width="1600" height="900" alt="WhatsApp Image 2026-04-28 at 2 29 30 PM" src="https://github.com/user-attachments/assets/59acba63-9ec5-45a5-997d-c8d3f807fc1b" />
 
-# FIGURE -09 ADD TITLE HERE 
+<img width="1600" height="900" alt="WhatsApp Image 2026-04-28 at 2 28 37 PM" src="https://github.com/user-attachments/assets/9df65594-6657-4349-b613-8a4c6950c0d1" />
 
  
 ## RESULTS
